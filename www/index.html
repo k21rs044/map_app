@@ -40,6 +40,20 @@
                 $("#message").html(data + " " + update);
             })
     }
+
+    function fetchAll() {
+        var testClass = ncmb.DataStore("FetchTest");
+        testClass.fetchAll()
+            .then(function(results) { //成功時thenを実行 resultsが取得したレコード
+            var msg = "";
+            for (var i = 0; i < results.length; i++) {
+                var data = results[i].get("text"); //フィールドの値を取得
+                var update = results[i].get("updateDate");
+                msg += data + " " + update;
+            }
+            $("#message").html(msg);
+            })
+    }
     </script>
 </head>
 <body>
