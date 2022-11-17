@@ -1,72 +1,76 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: content: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
-    <script src="components/loader.js"></script>
-    <link rel="stylesheet" href="components/loader.css">
-    <link rel="stylesheet" href="css/style.css">
-    <script src="keys.js"></script>
-    <script>
-    // NCMB アクセスの準備
-    var ncmb = new NCMB(appKey, clientKey);
-    // 利用するデータベースを指定（存在しなければ生成）
-    var TestClass = ncmb.DataStore("FetchTest"); //クラス指定
+    <!DOCTYPE HTML>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: content: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+        <script src="components/loader.js"></script>
+        <link rel="stylesheet" href="components/loader.css">
+        <link rel="stylesheet" href="css/style.css">
+        <script src="keys.js"></script>
+        <script>
+        // NCMB アクセスの準備
+        var ncmb = new NCMB(appKey, clientKey);
+        // 利用するデータベースを指定（存在しなければ生成）
+        var TestClass = ncmb.DataStore("FetchTest"); //クラス指定
 
-    function register() {
-      // 登録するレコードを用意
-      var testClass = new TestClass();
-      var key = "text";
-      var value = $("#value").val();
-      // レコードのフィールドと値を設定
-      testClass.set(key, value);
-      // レコードをデータベースに登録
-      testClass.save()
-      .then(function(m) {
-        $("#message").html("New object created with objectId: " + testClass.objectId);
-      })
-      .catch(function(err){
-        $("#message").html("Failed to create new object, with error code: " + JSON.stringify(err));
-      })
-    }
+        function register() {
+        // 登録するレコードを用意
+        var testClass = new TestClass();
+        var key = "text";
+        var value = $("#value").val();
+        // レコードのフィールドと値を設定
+        testClass.set(key, value);
+        // レコードをデータベースに登録
+        testClass.save()
+        .then(function(m) {
+            $("#message").html("New object created with objectId: " + testClass.objectId);
+        })
+        .catch(function(err){
+            $("#message").html("Failed to create new object, with error code: " + JSON.stringify(err));
+        })
+        }
 
-    function fetch() {
-        var testClass = ncmb.DataStore("FetchTest");
-        testClass.fetch()
-            .then(function(results) { //成功時thenを実行 resultsが取得したレコード
-                var data = results.get("text"); //フィールドの値を取得
-                var update = results.get("updateDate");
-                $("#message").html(data + " " + update);
-            })
-    }
+        function fetch() {
+            var testClass = ncmb.DataStore("FetchTest");
+            testClass.fetch()
+                .then(function(results) { //成功時thenを実行 resultsが取得したレコード
+                    var data = results.get("text"); //フィールドの値を取得
+                    var update = results.get("updateDate");
+                    $("#message").html(data + " " + update);
+                })
+        }
 
-    function fetchAll() {
-        var testClass = ncmb.DataStore("FetchTest");
-        testClass.fetchAll()
-            .then(function(results) { //成功時thenを実行 resultsが取得したレコード
-            var msg = "";
-            for (var i = 0; i < results.length; i++) {
-                var data = results[i].get("text"); //フィールドの値を取得
-                var update = results[i].get("updateDate");
-                msg += data + " " + update + "\n";
-            }
-            $("#message").html(msg);
-            })
-    }
-    </script>
-</head>
-<body>
-  <h1>mBaaS fetch</h1>
-  <div>
-    <label for="value">Value:</label>
-    <input id="value" type="text" value="Hello, mBaaS!">
-  </div>
-  <div id="button">
-    <button id="btnA" class="btn" onclick="register()">Register</button>
-    <button id="btnB" class="btn" onclick="fetch()">Fetch</button>
-    <button id="btnC" class="btn" onclick="fetchAll()">FetchAll</button>
-  </div>
-  <div id="message">message area</div>
-</body>
-</html>
+        function fetchAll() {
+            var testClass = ncmb.DataStore("FetchTest");
+            testClass.fetchAll()
+                .then(function(results) { //成功時thenを実行 resultsが取得したレコード
+                    resetRow();
+                    var mytable = document.getElementById("tbl");
+                    for (var i = 0; i < results.length; i++) {
+                        var data = results[i].get("text"); //フィールドの値を取得
+                        var update = results[i].get("updateDate");
+                        insertRow(data, update);
+                    }
+                    $("#message").html(msg);
+                })
+        }
+        </script>
+    </head>
+    <body>
+    <h1>mBaaS fetch</h1>
+    <div>
+        <label for="value">Value:</label>
+        <input id="value" type="text" value="Hello, mBaaS!">
+    </div>
+    <div id="button">
+        <button id="btnA" class="btn" onclick="register()">Register</button>
+        <button id="btnB" class="btn" onclick="fetch()">Fetch</button>
+        <button id="btnC" class="btn" onclick="fetchAll()">FetchAll</button>
+    </div>
+    <div id="message">message area</div>
+    <table id="tb1">
+        <tr><th>message</th><th>Update Date</th></tr>
+    </table>
+    </body>
+    </html>
