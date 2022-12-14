@@ -6,6 +6,11 @@ h1 {
   background-color: yellow;
 }
 
+h2 {
+    font-size: 14pt;
+    text-decoration: underline;
+}
+
 label {
   display: block;
   float: left;
